@@ -11,7 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { PlateComponent } from '../../shared/plate/plate';
 import { ContentService } from '../../data/content.service';
@@ -28,7 +28,7 @@ import { SeoService } from '../../seo/seo.service';
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, PlateComponent],
+  imports: [RouterLink, PlateComponent],
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
 })

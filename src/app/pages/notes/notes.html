@@ -21,7 +21,6 @@
           } @else {
             <a
               [routerLink]="language.path('notes', item.node.slug)"
-              routerLinkActive="is-active"
               class="browse__nav-link"
               [class.is-active]="active()?._id === item.node._id"
               (pointerenter)="prefetchNote(item.node.slug)"

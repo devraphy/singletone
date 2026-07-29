@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, resource, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { toHTML, uriLooksSafe } from '@portabletext/to-html';
 import { ContentService } from '../../data/content.service';
@@ -11,7 +11,7 @@ import { flattenNoteTree, notesInTree, parentGroupIdsForNote } from '../../data/
 @Component({
   selector: 'app-notes',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink],
   templateUrl: './notes.html',
   styleUrl: './notes.scss',
 })
