@@ -21,7 +21,6 @@
     "@portabletext/to-html": "^5.0.2",
     "@sanity/client": "^7.25.0",
     "@sanity/image-url": "^2.1.1",
-    "git": "^0.1.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
