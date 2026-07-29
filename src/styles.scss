@@ -1,0 +1,158 @@
+// Singletone — design tokens
+// Fine-art portrait archive. Monochrome architecture: the photographs are the only color.
+
+:root {
+  --paper: #f7f6f3;
+  --paper-dim: #efeee9;
+  --ink: #1a1a18;
+  --graphite: #6b6862;
+  --hairline: #d8d5ce;
+
+  --font-display: 'Newsreader', 'Noto Serif KR', 'Iowan Old Style', 'Georgia', serif;
+  --font-utility: 'Archivo', 'Helvetica Neue', sans-serif;
+
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --measure: 34rem;
+  --nav-h: 4.25rem;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+// Route transitions — a quiet cross-fade, nothing that slides or zooms.
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.32s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    mix-blend-mode: normal;
+  }
+  ::view-transition-old(root) {
+    animation-name: singletone-fade-out;
+  }
+  ::view-transition-new(root) {
+    animation-name: singletone-fade-in;
+  }
+}
+
+@keyframes singletone-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes singletone-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-utility);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  text-align: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+// A quiet loading indicator for images still in flight — plate thumbnails
+// and the lightbox's larger fetch. No color, just a turning hairline ring.
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1.5px solid var(--hairline);
+  border-top-color: var(--graphite);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.eyebrow {
+  font-family: var(--font-utility);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}

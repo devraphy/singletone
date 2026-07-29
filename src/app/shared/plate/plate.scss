@@ -1,0 +1,84 @@
+.plate {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(155deg, var(--tone-a) 0%, var(--tone-b) 55%, var(--tone-c) 100%);
+
+  &--portrait {
+    aspect-ratio: 4 / 5;
+  }
+  &--square {
+    aspect-ratio: 1 / 1;
+  }
+  &--wide {
+    aspect-ratio: 16 / 10;
+  }
+
+  // Blank print-mount tones — quiet, paper-adjacent grays, not photographs.
+  &--tone0 {
+    --tone-a: #efeee9;
+    --tone-b: #e8e6df;
+    --tone-c: #dedbd2;
+  }
+  &--tone1 {
+    --tone-a: #f0efe9;
+    --tone-b: #e6e3da;
+    --tone-c: #d9d5c9;
+  }
+  &--tone2 {
+    --tone-a: #eeece6;
+    --tone-b: #e2dfd6;
+    --tone-c: #d3cfc3;
+  }
+  &--tone3 {
+    --tone-a: #efeee8;
+    --tone-b: #e7e4dc;
+    --tone-c: #dad6cb;
+  }
+  &--tone4 {
+    --tone-a: #edece6;
+    --tone-b: #e3e0d7;
+    --tone-c: #d6d2c6;
+  }
+}
+
+.plate__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+
+  &.is-loaded {
+    opacity: 1;
+  }
+}
+
+// Centered via inset+margin, not `transform` — `.spinner`'s own spin
+// animation already owns `transform: rotate(...)`, and the two would
+// otherwise fight over the same property.
+.plate__spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+.plate__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.plate__number {
+  position: absolute;
+  left: 0.9em;
+  bottom: 0.7em;
+  font-family: var(--font-utility);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--graphite);
+  line-height: 1;
+  user-select: none;
+}

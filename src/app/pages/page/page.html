@@ -1,0 +1,48 @@
+@if (page(); as p) {
+  @for (item of [p]; track item._id) {
+    <section class="page">
+      <span class="eyebrow">{{ p.menuLabel }}</span>
+
+      @if (bodyHtml()) {
+        <div class="page__body" [innerHTML]="bodyHtml()"></div>
+      }
+
+      @if (p.links?.length) {
+        <dl class="contact__list">
+          @for (l of p.links; track l.label) {
+            <div>
+              <dt>{{ l.label }}</dt>
+              <dd>
+                <a [href]="l.url" [attr.target]="isExternal(l.url) ? '_blank' : null" rel="noopener noreferrer">{{
+                  l.value
+                }}</a>
+                @if (l.note) {
+                  <span class="contact__note">{{ l.note }}</span>
+                }
+              </dd>
+            </div>
+          }
+        </dl>
+      }
+
+      @if (p.location) {
+        <p class="contact__location">{{ p.location }}</p>
+      }
+    </section>
+
+    @if (p.exhibitions?.length) {
+      <section class="cv">
+        <span class="eyebrow">{{ language.language() === 'ko' ? '전시' : 'Exhibitions' }}</span>
+        <ol class="cv__list">
+          @for (e of p.exhibitions; track e.year + e.title) {
+            <li class="cv__row">
+              <span class="cv__year">{{ e.year }}</span>
+              <span class="cv__title">{{ e.title }}</span>
+              <span class="cv__venue">{{ e.venue }}</span>
+            </li>
+          }
+        </ol>
+      </section>
+    }
+  }
+}

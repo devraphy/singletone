@@ -1,0 +1,174 @@
+<div class="browse">
+  <aside class="browse__sidebar">
+    <span class="eyebrow">PROJECTS</span>
+    <ul class="browse__list">
+      @for (item of visibleProjectItems(); track item.node._id) {
+        <li
+          [style.--tree-depth]="item.depth"
+          [class.is-child]="item.depth > 0"
+          [class.is-last-child]="item.isLast"
+        >
+          @if (item.node._type === 'group') {
+            <button
+              type="button"
+              class="browse__nav-link browse__nav-group"
+              [class.is-open]="expandedGroups().has(item.node._id)"
+              [attr.aria-expanded]="expandedGroups().has(item.node._id)"
+              (click)="toggleGroup(item.node._id)"
+            >
+              {{ item.node.title }}
+            </button>
+          } @else {
+            <a
+              [routerLink]="language.path('projects', item.node.slug)"
+              routerLinkActive="is-active"
+              class="browse__nav-link"
+              >{{ item.node.title }}</a
+            >
+          }
+        </li>
+      }
+    </ul>
+  </aside>
+
+  @if (active(); as s) {
+    @for (item of [s]; track item._id) {
+      <div class="browse__main">
+        <header class="browse__head">
+          <span class="eyebrow">{{ s.year }} — {{ s.medium }}</span>
+          <h1>{{ s.title }}</h1>
+          <p class="browse__note">{{ s.note }}</p>
+        </header>
+
+        <div class="browse__grid" [class.is-cinematic]="s.layout === 'cinematic'">
+          @for (plate of s.plates; track plate._key; let i = $index) {
+            <figure class="work">
+              <button
+                type="button"
+                class="work__trigger"
+                (focus)="preloadPlate(plate)"
+                (click)="open(plate, $event)"
+              >
+                <app-plate
+                  [seed]="i"
+                  [ratio]="'portrait'"
+                  [aspectRatio]="plateAspectRatio(plate, s.layout)"
+                  [src]="imageUrl(plate.image, s.layout === 'cinematic' ? 1800 : 700)"
+                  [srcset]="
+                    imageSrcSet(
+                      plate.image,
+                      s.layout === 'cinematic' ? [640, 1000, 1600, 2200] : [400, 700, 1200]
+                    )
+                  "
+                  [sizes]="
+                    s.layout === 'cinematic'
+                      ? '(max-width: 40rem) 90vw, (max-width: 94rem) 75vw, 1200px'
+                      : '(max-width: 40rem) 90vw, (max-width: 60rem) 40vw, 25vw'
+                  "
+                  [alt]="plate.title"
+                  [loading]="i === 0 ? 'eager' : 'lazy'"
+                  [fetchPriority]="i === 0 ? 'high' : 'auto'"
+                />
+                <span class="work__zoom" aria-hidden="true">
+                  <svg class="work__zoom-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+              </button>
+              <figcaption class="work__caption">
+                <span class="work__title">{{ plate.title }}</span>
+                <span class="work__meta">
+                  @if (plate.dimensions) {
+                    <span>{{ plate.dimensions }}</span>
+                  }
+                  @if (plate.edition) {
+                    <span>Ed. {{ plate.edition }}</span>
+                  }
+                </span>
+              </figcaption>
+            </figure>
+          }
+        </div>
+      </div>
+    }
+
+    @if (lightboxPlate(); as p) {
+      <div
+        #lightbox
+        class="lightbox"
+        [class.has-navigation]="s.plates.length > 1"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lightbox-title"
+        (click)="onLightboxBackdropClick($event)"
+      >
+        <button
+          #lightboxClose
+          type="button"
+          class="lightbox__close"
+          (click)="$event.stopPropagation(); close()"
+          aria-label="Close image viewer"
+        >
+          <span>Close</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+        @if (s.plates.length > 1) {
+          <button
+            type="button"
+            class="lightbox__nav lightbox__nav--previous"
+            aria-label="Previous image"
+            (click)="$event.stopPropagation(); stepLightbox(-1)"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 4 7 12l8 8" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="lightbox__nav lightbox__nav--next"
+            aria-label="Next image"
+            (click)="$event.stopPropagation(); stepLightbox(1)"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 4 8 8-8 8" />
+            </svg>
+          </button>
+        }
+        @if (!lightboxLoaded()) {
+          <span class="lightbox__spinner spinner" aria-hidden="true"></span>
+        }
+        <figure class="lightbox__frame" (click)="$event.stopPropagation()">
+          <img
+            class="lightbox__img"
+            [class.is-loaded]="lightboxLoaded()"
+            [class.is-landscape]="lightboxLandscape()"
+            [class.is-zoomed]="zoomScale() > 1"
+            [style.transform]="'scale(' + zoomScale() + ')'"
+            [style.transform-origin]="zoomOriginX() + '% ' + zoomOriginY() + '%'"
+            [src]="lightboxImageSrc(p)"
+            [alt]="p.title"
+            (load)="onLightboxImgLoad($event)"
+            (click)="onLightboxImgClick($event)"
+            (wheel)="onLightboxWheel($event)"
+            (mousemove)="onLightboxMouseMove($event)"
+            decoding="async"
+          />
+          <figcaption class="lightbox__caption" [class.is-hidden]="zoomScale() > 1">
+            <span id="lightbox-title" class="lightbox__title">{{ p.title }}</span>
+            <span class="lightbox__meta">
+              @if (p.dimensions) {
+                <span>{{ p.dimensions }}</span>
+              }
+              @if (p.edition) {
+                <span>Ed. {{ p.edition }}</span>
+              }
+              <span>{{ s.medium }}</span>
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+    }
+  }
+</div>

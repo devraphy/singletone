@@ -1,0 +1,48 @@
+<div class="browse">
+  <aside class="browse__sidebar">
+    <span class="eyebrow">NOTES</span>
+    <ul class="browse__list">
+      @for (item of visibleNoteItems(); track item.node._id) {
+        <li
+          [style.--tree-depth]="item.depth"
+          [class.is-child]="item.depth > 0"
+          [class.is-last-child]="item.isLast"
+        >
+          @if (item.node._type === 'noteGroup') {
+            <button
+              type="button"
+              class="browse__nav-link browse__nav-group"
+              [class.is-open]="expandedGroups().has(item.node._id)"
+              [attr.aria-expanded]="expandedGroups().has(item.node._id)"
+              (click)="toggleGroup(item.node._id)"
+            >
+              {{ item.node.title }}
+            </button>
+          } @else {
+            <a
+              [routerLink]="language.path('notes', item.node.slug)"
+              routerLinkActive="is-active"
+              class="browse__nav-link"
+              >{{ item.node.title }}</a
+            >
+          }
+        </li>
+      }
+    </ul>
+  </aside>
+
+  @if (active(); as n) {
+    @for (item of [n]; track item._id) {
+      <div class="browse__main">
+        <header class="browse__head">
+          <span class="eyebrow">{{ n.date }}</span>
+          <h1>{{ n.title }}</h1>
+        </header>
+
+        @if (bodyHtml()) {
+          <div class="browse__body" [innerHTML]="bodyHtml()"></div>
+        }
+      </div>
+    }
+  }
+</div>

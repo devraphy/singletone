@@ -1,0 +1,273 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: var(--nav-h);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter);
+  background: var(--paper);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.nav__mark {
+  flex: 0 0 auto;
+  font-family: var(--font-utility);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+
+  @media (max-width: 23rem) {
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+  }
+}
+
+.nav__links {
+  display: none;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  font-family: var(--font-utility);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--graphite);
+
+  @media (min-width: 48rem) {
+    display: flex;
+  }
+
+  a {
+    position: relative;
+    padding-bottom: 0.2em;
+    transition: color 0.25s var(--ease);
+
+    &:hover,
+    &.is-active {
+      color: var(--ink);
+    }
+  }
+}
+
+.language-switch {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-left: 0.25rem;
+  font-family: var(--font-utility);
+  font-size: 0.6875rem;
+  line-height: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hairline);
+
+  button {
+    position: relative;
+    font: inherit;
+    letter-spacing: inherit;
+    padding-bottom: 0.2rem;
+    color: var(--graphite);
+    transition: color 0.2s var(--ease);
+
+    &:hover,
+    &.is-active {
+      color: var(--ink);
+    }
+
+    &.is-active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0.12em;
+      bottom: 0;
+      height: 1px;
+      background: currentColor;
+    }
+  }
+}
+
+.language-switch--mobile {
+  margin: auto 0 0;
+  padding-top: 2rem;
+  justify-content: flex-end;
+
+  button {
+    font-size: 0.75rem;
+  }
+}
+
+.nav__toggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  @media (min-width: 48rem) {
+    display: none;
+  }
+
+  span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--ink);
+    transition:
+      transform 0.25s var(--ease),
+      top 0.25s var(--ease);
+  }
+
+  span:nth-child(1) {
+    top: 0.55rem;
+  }
+  span:nth-child(2) {
+    top: 0.95rem;
+  }
+
+  &.is-open {
+    span:nth-child(1) {
+      top: 0.75rem;
+      transform: rotate(45deg);
+    }
+    span:nth-child(2) {
+      top: 0.75rem;
+      transform: rotate(-45deg);
+    }
+  }
+}
+
+.nav-panel {
+  position: fixed;
+  top: var(--nav-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 39;
+  overflow-y: auto;
+  background: var(--paper);
+  padding: 0.5rem var(--gutter) 3rem;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 48rem) {
+    display: none;
+  }
+}
+
+.nav-panel__link {
+  padding: 0.95rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--ink);
+  text-transform: uppercase;
+
+  &.is-active {
+    color: var(--graphite);
+  }
+}
+
+.nav-panel__group {
+  display: flex;
+  flex-direction: column;
+
+  .nav-panel__link {
+    border-bottom: none;
+  }
+}
+
+.nav-panel__sub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.15rem 0 1rem 1rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.nav-panel__sub-link {
+  font-family: var(--font-utility);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  white-space: pre-line;
+  letter-spacing: 0.02em;
+  color: var(--graphite);
+
+  &.is-active {
+    color: var(--ink);
+  }
+}
+
+.nav-panel__tree-item {
+  position: relative;
+  padding-left: calc(var(--tree-depth, 0) * 1.4rem);
+  animation: tree-item-reveal 0.4s var(--ease) both;
+}
+
+// See projects.scss for the rationale: one continuous hairline spine per
+// nested run instead of a repeated box-drawing elbow on every row.
+.nav-panel__tree-item.is-child::before {
+  content: '';
+  position: absolute;
+  top: -0.28rem;
+  bottom: -0.28rem;
+  left: calc((var(--tree-depth) - 1) * 1.4rem + 0.32rem);
+  width: 1px;
+  background: var(--hairline);
+  pointer-events: none;
+}
+
+.nav-panel__tree-item.is-child.is-last-child::before {
+  bottom: auto;
+  height: 0.85rem;
+}
+
+.nav-panel__tree-item.is-child .nav-panel__sub-link {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--graphite);
+  padding-left: 0.85rem;
+  transition:
+    color 0.2s var(--ease),
+    font-style 0.2s var(--ease);
+
+  // Mirrors projects.scss: a short tick grows in from the spine to flag
+  // the selected entry, the one place the connector earns its keep.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 0.55rem;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+
+  &.is-active {
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 500;
+
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+}
+
+@keyframes tree-item-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
+
+.nav-panel__project-group {
+  text-align: left;
+}

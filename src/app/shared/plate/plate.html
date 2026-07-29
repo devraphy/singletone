@@ -1,0 +1,29 @@
+<div
+  class="plate"
+  [class]="'plate--' + ratio() + (showImage() ? '' : ' plate--tone' + tone())"
+  [style.aspect-ratio]="aspectRatio()"
+>
+  @if (showImage()) {
+    <img
+      class="plate__img"
+      [class.is-loaded]="loaded()"
+      [src]="src()"
+      [srcset]="srcset()"
+      [sizes]="sizes()"
+      [alt]="alt()"
+      [attr.loading]="loading()"
+      [attr.fetchpriority]="fetchPriority()"
+      (load)="onImgLoad()"
+      (error)="onImgError()"
+      decoding="async"
+    />
+    @if (!loaded()) {
+      <span class="plate__spinner spinner" aria-hidden="true"></span>
+    }
+  } @else {
+    <span class="plate__grain" aria-hidden="true"></span>
+    @if (plateNumber()) {
+      <span class="plate__number" aria-hidden="true">{{ plateNumber() }}</span>
+    }
+  }
+</div>

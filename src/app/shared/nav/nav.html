@@ -1,0 +1,136 @@
+<nav class="nav">
+  <a class="nav__mark" [routerLink]="language.path()" (click)="close()">L.G.H.</a>
+
+  <div class="nav__links">
+    <a [routerLink]="language.path()" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="is-active">
+      HOME
+    </a>
+    <a [routerLink]="language.path('projects')" routerLinkActive="is-active">
+      PROJECTS
+    </a>
+    <a [routerLink]="language.path('notes')" routerLinkActive="is-active">
+      NOTES
+    </a>
+    @for (p of pageLinks(); track p._id) {
+      <a [routerLink]="language.path(p.slug)" routerLinkActive="is-active">{{ p.menuLabel }}</a>
+    }
+    <div class="language-switch" aria-label="Language">
+      <button type="button" [class.is-active]="language.language() === 'ko'" (click)="selectLanguage('ko')">KO</button>
+      <span aria-hidden="true">/</span>
+      <button type="button" [class.is-active]="language.language() === 'en'" (click)="selectLanguage('en')">EN</button>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="nav__toggle"
+    [class.is-open]="menuOpen()"
+    (click)="toggle()"
+    [attr.aria-expanded]="menuOpen()"
+    aria-label="Menu"
+  >
+    <span></span>
+    <span></span>
+  </button>
+</nav>
+
+@if (menuOpen()) {
+  <div class="nav-panel">
+    <a
+      class="nav-panel__link"
+      [routerLink]="language.path()"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="is-active"
+      (click)="close()"
+      >HOME</a
+    >
+
+    <div class="nav-panel__group">
+      <a class="nav-panel__link" [routerLink]="language.path('projects')" routerLinkActive="is-active" (click)="close()">
+        PROJECTS
+      </a>
+      <div class="nav-panel__sub">
+        @for (item of visibleProjectItems(); track item.node._id) {
+          <div
+            class="nav-panel__tree-item"
+            [class.is-child]="item.depth > 0"
+            [class.is-last-child]="item.isLast"
+            [style.--tree-depth]="item.depth"
+          >
+            @if (item.node._type === 'group') {
+              <button
+                type="button"
+                class="nav-panel__sub-link nav-panel__project-group"
+                [class.is-open]="expandedProjectGroups().has(item.node._id)"
+                [attr.aria-expanded]="expandedProjectGroups().has(item.node._id)"
+                (click)="toggleProjectGroup(item.node._id)"
+              >
+                {{ item.node.title }}
+              </button>
+            } @else {
+              <a
+                class="nav-panel__sub-link"
+                [routerLink]="language.path('projects', item.node.slug)"
+                routerLinkActive="is-active"
+                (click)="close()"
+                >{{ item.node.title }}</a
+              >
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="nav-panel__group">
+      <a class="nav-panel__link" [routerLink]="language.path('notes')" routerLinkActive="is-active" (click)="close()">
+        NOTES
+      </a>
+      <div class="nav-panel__sub">
+        @for (item of visibleNoteItems(); track item.node._id) {
+          <div
+            class="nav-panel__tree-item"
+            [class.is-child]="item.depth > 0"
+            [class.is-last-child]="item.isLast"
+            [style.--tree-depth]="item.depth"
+          >
+            @if (item.node._type === 'noteGroup') {
+              <button
+                type="button"
+                class="nav-panel__sub-link nav-panel__project-group"
+                [class.is-open]="expandedNoteGroups().has(item.node._id)"
+                [attr.aria-expanded]="expandedNoteGroups().has(item.node._id)"
+                (click)="toggleNoteGroup(item.node._id)"
+              >
+                {{ item.node.title }}
+              </button>
+            } @else {
+              <a
+                class="nav-panel__sub-link"
+                [routerLink]="language.path('notes', item.node.slug)"
+                routerLinkActive="is-active"
+                (click)="close()"
+                >{{ item.node.title }}</a
+              >
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @for (p of pageLinks(); track p._id) {
+      <a
+        class="nav-panel__link"
+        [routerLink]="language.path(p.slug)"
+        routerLinkActive="is-active"
+        (click)="close()"
+        >{{ p.menuLabel }}</a
+      >
+    }
+
+    <div class="language-switch language-switch--mobile" aria-label="Language">
+      <button type="button" [class.is-active]="language.language() === 'ko'" (click)="selectLanguage('ko')">KO</button>
+      <span aria-hidden="true">/</span>
+      <button type="button" [class.is-active]="language.language() === 'en'" (click)="selectLanguage('en')">EN</button>
+    </div>
+  </div>
+}

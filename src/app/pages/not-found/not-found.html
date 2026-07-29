@@ -1,0 +1,12 @@
+<section class="not-found">
+  <span class="eyebrow">{{ isError ? 'ERROR' : '404' }}</span>
+  <h1>{{ isError ? 'Something went wrong' : 'Page not found' }}</h1>
+  <p>
+    {{
+      isError
+        ? 'The content could not be loaded. Please return home and try again.'
+        : 'The page may have moved or no longer exists.'
+    }}
+  </p>
+  <a [routerLink]="language.path()">Return home</a>
+</section>

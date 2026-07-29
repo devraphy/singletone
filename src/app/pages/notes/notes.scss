@@ -1,0 +1,150 @@
+.browse {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: clamp(3rem, 8vw, 5rem) var(--gutter) clamp(4rem, 10vw, 6rem);
+  max-width: 94rem;
+  margin: 0 auto;
+
+  @media (min-width: 48rem) {
+    flex-direction: row;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+}
+
+.browse__sidebar {
+  // Note switching moves into the hamburger menu below 48rem.
+  display: none;
+
+  @media (min-width: 48rem) {
+    display: block;
+    flex: 0 0 11rem;
+  }
+}
+
+.browse__list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+
+  @media (min-width: 48rem) {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+}
+
+.browse__list li {
+  position: relative;
+  padding-left: calc(var(--tree-depth, 0) * 1.4rem);
+}
+
+.browse__list li.is-child::before {
+  content: '';
+  position: absolute;
+  top: -0.42rem;
+  bottom: -0.42rem;
+  left: calc((var(--tree-depth) - 1) * 1.4rem + 0.32rem);
+  width: 1px;
+  background: var(--hairline);
+  pointer-events: none;
+}
+
+.browse__list li.is-child.is-last-child::before {
+  bottom: auto;
+  height: 1rem;
+}
+
+.browse__nav-link {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--graphite);
+  transition: color 0.2s var(--ease);
+
+  &.is-active,
+  &:hover {
+    color: var(--ink);
+  }
+}
+
+.browse__list li.is-child .browse__nav-link {
+  position: relative;
+  padding-left: 0.85rem;
+  font-size: 0.9rem;
+  font-style: italic;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 0.55rem;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+
+  &.is-active {
+    font-style: normal;
+    font-weight: 500;
+
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.browse__nav-group {
+  text-align: left;
+}
+
+.browse__main {
+  flex: 1;
+  min-width: 0;
+  max-width: 40rem;
+  animation: content-reveal 0.55s var(--ease) both;
+}
+
+.browse__head {
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.browse__head h1 {
+  margin-top: 0.5em;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+:host ::ng-deep .browse__body {
+  p {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--graphite);
+
+    // A normal Enter in Sanity starts the next line without adding visual
+    // paragraph spacing. Only an explicitly empty block creates a blank line.
+    &:empty {
+      min-height: 1.65em;
+    }
+  }
+
+  a {
+    color: inherit;
+
+    &:hover {
+      color: var(--ink);
+    }
+  }
+}
+
+// Newsreader's Latin glyphs have a smaller visual body than Noto Serif KR at
+// the same nominal size. Compensate on English Notes so both languages read at
+// the same apparent scale.
+:host-context(html:lang(en)) ::ng-deep .browse__body p {
+  font-size: 1.125rem;
+}

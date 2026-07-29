@@ -1,0 +1,501 @@
+.browse {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: clamp(3rem, 8vw, 5rem) var(--gutter) clamp(4rem, 10vw, 6rem);
+  max-width: 94rem;
+  margin: 0 auto;
+
+  @media (min-width: 48rem) {
+    flex-direction: row;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+}
+
+.browse__sidebar {
+  // Project switching moves into the hamburger menu below 48rem.
+  display: none;
+
+  @media (min-width: 48rem) {
+    display: block;
+    flex: 0 0 11rem;
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+    align-self: flex-start;
+    max-height: calc(100svh - var(--nav-h) - 4rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hairline) transparent;
+  }
+}
+
+.browse__list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+
+  @media (min-width: 48rem) {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+}
+
+.browse__list li {
+  position: relative;
+  padding-left: calc(var(--tree-depth, 0) * 1.4rem);
+  animation: tree-item-reveal 0.4s var(--ease) both;
+}
+
+// A single hairline spine runs down the left of each nested run, standing
+// in for the old box-drawing elbow (└─) — that read as a file-tree widget,
+// out of place in a catalogue index. Each child's rule reaches half a gap
+// above and below itself so consecutive siblings read as one unbroken
+// line; the last child in a run stops at its own mid-height instead of
+// dangling past the final entry.
+.browse__list li.is-child::before {
+  content: '';
+  position: absolute;
+  top: -0.3rem;
+  bottom: -0.3rem;
+  left: calc((var(--tree-depth) - 1) * 1.4rem + 0.32rem);
+  width: 1px;
+  background: var(--hairline);
+  pointer-events: none;
+}
+
+.browse__list li.is-child.is-last-child::before {
+  bottom: auto;
+  height: 0.95rem;
+}
+
+@keyframes tree-item-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+}
+
+.browse__nav-link {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.25;
+  white-space: pre-line;
+  color: var(--graphite);
+  transition: color 0.2s var(--ease);
+
+  &.is-active,
+  &:hover {
+    color: var(--ink);
+  }
+}
+
+.browse__list li.is-child .browse__nav-link {
+  position: relative;
+  font-size: 0.9rem;
+  font-style: italic;
+  padding-left: 0.85rem;
+  transition:
+    color 0.2s var(--ease),
+    font-style 0.2s var(--ease);
+
+  // A short tick grows in from the spine to flag the selected entry — the
+  // one place the connector actually earns its keep, instead of every row
+  // getting the same elbow regardless of state.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 0.55rem;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+
+  &.is-active {
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-style: normal;
+    font-weight: 500;
+
+    &::before {
+      transform: scaleX(1);
+    }
+  }
+}
+
+.browse__nav-group {
+  text-align: left;
+}
+
+.browse__main {
+  flex: 1;
+  min-width: 0;
+  // Keep the new project visible from the first frame. Fading from opacity 0
+  // made a completed Sanity response look like it was still loading.
+  animation: project-content-reveal 0.32s var(--ease) both;
+}
+
+@keyframes project-content-reveal {
+  from {
+    transform: translateY(8px);
+  }
+}
+
+.browse__head {
+  max-width: 40rem;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.browse__head h1 {
+  margin-top: 0.5em;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.browse__note {
+  margin-top: 1em;
+  font-family: var(--font-display);
+  color: var(--graphite);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.browse__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.75rem, 3vw, 2.75rem);
+
+  @media (max-width: 60rem) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 40rem) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.browse__grid.is-cinematic {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2.5rem, 6vw, 5rem);
+
+  .work {
+    width: 100%;
+  }
+}
+
+.work {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.work__trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  cursor: zoom-in;
+  outline: 1px solid transparent;
+  outline-offset: 0;
+  transition:
+    outline-color 0.25s var(--ease),
+    outline-offset 0.25s var(--ease);
+
+  &:hover,
+  &:focus-visible {
+    outline-color: var(--ink);
+    outline-offset: 0.5rem;
+
+    .work__zoom {
+      opacity: 1;
+    }
+  }
+}
+
+.work__zoom {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+  background: rgba(26, 26, 24, 0.18);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+
+.work__zoom-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.work__caption {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.work__title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.work__meta {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  background: rgba(26, 26, 24, 0.92);
+  cursor: default;
+  animation: lightbox-fade 0.2s var(--ease) both;
+
+  &.has-navigation {
+    cursor: pointer;
+  }
+}
+
+@keyframes lightbox-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.lightbox__close {
+  position: fixed;
+  top: clamp(1rem, 3vw, 1.75rem);
+  right: clamp(1rem, 3vw, 1.75rem);
+  z-index: 2;
+  min-width: 5.5rem;
+  height: 2.75rem;
+  padding: 0 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px solid rgba(247, 246, 243, 0.55);
+  border-radius: 999px;
+  font-family: var(--font-utility);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: rgba(26, 26, 24, 0.5);
+  backdrop-filter: blur(6px);
+  transition:
+    color 0.2s var(--ease),
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: var(--ink);
+    background: var(--paper);
+    border-color: var(--paper);
+  }
+}
+
+.lightbox__nav {
+  position: fixed;
+  top: 50%;
+  z-index: 1;
+  width: clamp(2.5rem, 5vw, 3.5rem);
+  height: clamp(3.5rem, 8vw, 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--paper);
+  transform: translateY(-50%);
+  transition: opacity 0.2s var(--ease);
+
+  svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover,
+  &:focus-visible {
+    opacity: 0.65;
+  }
+}
+
+.lightbox__nav--previous {
+  left: clamp(0.25rem, 2vw, 1.5rem);
+}
+
+.lightbox__nav--next {
+  right: clamp(0.25rem, 2vw, 1.5rem);
+}
+
+.lightbox__frame {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  cursor: default;
+}
+
+.lightbox__img {
+  // `auto` sizing (bounded only by max-width/max-height) never upscales past
+  // the source file's native resolution, so on a lower-res asset the photo
+  // stopped short of the 90% target with dead space around it. Forcing the
+  // binding axis explicitly (height for portrait, width for landscape — set
+  // once the image loads and its orientation is known, see
+  // `onLightboxImgLoad`) makes that axis actually reach its target instead
+  // of just capping below it.
+  width: auto;
+  height: 88vh;
+  max-width: 94vw;
+  object-fit: contain;
+  opacity: 0;
+  cursor: zoom-in;
+  transition:
+    opacity 0.3s var(--ease),
+    width 0.25s var(--ease),
+    height 0.25s var(--ease),
+    max-width 0.25s var(--ease),
+    max-height 0.25s var(--ease),
+    transform 0.12s linear;
+
+  &.is-loaded {
+    opacity: 1;
+  }
+
+  &.is-landscape {
+    width: 70vw;
+    height: auto;
+    max-width: none;
+    max-height: 90vh;
+  }
+
+  // Further (mouse-driven) zoom beyond the base fill grows the cap toward
+  // full-screen so the `transform: scale(...)` magnification has a bigger
+  // window to pan around in, instead of cropping inside the same box.
+  &.is-zoomed {
+    height: 99vh;
+    max-width: 99vw;
+    cursor: zoom-out;
+
+    &.is-landscape {
+      width: 99vw;
+      max-height: 99vh;
+    }
+  }
+}
+
+// Anchored to `.lightbox` (fixed, full-viewport) rather than the frame, so
+// it stays put regardless of the image/caption's own box resolving during
+// load. Nudged above dead-center (rather than 50%) since the frame's true
+// vertical center usually falls in/near the caption below the photo.
+// Positioned via `top`/`margin` (not `transform`), so it doesn't fight the
+// spin animation's own `transform: rotate(...)` on the same property.
+// Dark backdrop here, so also a lighter tone than the page version.
+.lightbox__spinner {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  border-color: rgba(247, 246, 243, 0.25);
+  border-top-color: var(--paper);
+}
+
+.lightbox__caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  margin-top: 1.25rem;
+  text-align: center;
+  color: var(--paper);
+  opacity: 1;
+  max-height: 4rem;
+  overflow: hidden;
+  transition:
+    opacity 0.2s var(--ease),
+    max-height 0.2s var(--ease),
+    margin-top 0.2s var(--ease);
+
+  &.is-hidden {
+    opacity: 0;
+    max-height: 0;
+    margin-top: 0;
+  }
+}
+
+.lightbox__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.lightbox__meta {
+  display: flex;
+  justify-content: center;
+  gap: 0.9rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+@media (max-width: 40rem) {
+  .lightbox {
+    padding: 4.75rem 1rem 1rem;
+  }
+
+  .lightbox__frame {
+    width: 100%;
+    max-height: calc(100svh - 5.75rem);
+  }
+
+  .lightbox__img:not(.is-zoomed),
+  .lightbox__img.is-landscape:not(.is-zoomed) {
+    width: auto;
+    height: auto;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100svh - 9.5rem);
+  }
+
+  .lightbox__caption {
+    flex: 0 0 auto;
+    margin-top: 0.75rem;
+  }
+
+  .lightbox__nav {
+    top: calc(50% + 1.5rem);
+  }
+}
