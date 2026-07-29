@@ -9,10 +9,30 @@
     >
       HOME
     </a>
-    <a [routerLink]="language.path('projects')" routerLinkActive="is-active"> PROJECTS </a>
-    <a [routerLink]="language.path('notes')" routerLinkActive="is-active"> NOTES </a>
+    <a
+      [routerLink]="language.path('projects')"
+      routerLinkActive="is-active"
+      (pointerenter)="prepareProject()"
+      (focus)="prepareProject()"
+    >
+      PROJECTS
+    </a>
+    <a
+      [routerLink]="language.path('notes')"
+      routerLinkActive="is-active"
+      (pointerenter)="prepareNote()"
+      (focus)="prepareNote()"
+    >
+      NOTES
+    </a>
     @for (p of pageLinks(); track p._id) {
-      <a [routerLink]="language.path(p.slug)" routerLinkActive="is-active">{{ p.menuLabel }}</a>
+      <a
+        [routerLink]="language.path(p.slug)"
+        routerLinkActive="is-active"
+        (pointerenter)="preparePage(p.slug)"
+        (focus)="preparePage(p.slug)"
+        >{{ p.menuLabel }}</a
+      >
     }
     <div class="language-switch" aria-label="Language">
       <button
@@ -94,6 +114,8 @@
                 class="nav-panel__sub-link"
                 [routerLink]="language.path('projects', item.node.slug)"
                 routerLinkActive="is-active"
+                (pointerenter)="prepareProject(item.node.slug)"
+                (focus)="prepareProject(item.node.slug)"
                 (click)="close()"
                 >{{ item.node.title }}</a
               >
@@ -138,6 +160,8 @@
                 class="nav-panel__sub-link"
                 [routerLink]="language.path('notes', item.node.slug)"
                 routerLinkActive="is-active"
+                (pointerenter)="prepareNote(item.node.slug)"
+                (focus)="prepareNote(item.node.slug)"
                 (click)="close()"
                 >{{ item.node.title }}</a
               >
@@ -152,6 +176,8 @@
         class="nav-panel__link"
         [routerLink]="language.path(p.slug)"
         routerLinkActive="is-active"
+        (pointerenter)="preparePage(p.slug)"
+        (focus)="preparePage(p.slug)"
         (click)="close()"
         >{{ p.menuLabel }}</a
       >

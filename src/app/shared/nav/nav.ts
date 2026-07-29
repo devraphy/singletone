@@ -48,16 +48,30 @@ export class NavComponent {
   menuOpen = signal(false);
 
   constructor() {
-    // Fetch shortly after the first render. In normal use this finishes before
-    // the menu is opened without competing with the critical first paint.
+    // Fetch immediately after the first render. It cannot delay the initial
+    // paint, but it is ready sooner for the user's first navigation.
     afterNextRender(() => {
-      const timerId = window.setTimeout(() => this.content.loadNavigationTrees(), 1200);
+      const timerId = window.setTimeout(() => this.content.loadNavigationTrees());
       this.destroyRef.onDestroy(() => window.clearTimeout(timerId));
     });
   }
 
   prepareMenu() {
     this.content.loadNavigationTrees();
+  }
+
+  prepareProject(slug?: string) {
+    this.prepareMenu();
+    this.content.prefetchSeries(slug);
+  }
+
+  prepareNote(slug?: string) {
+    this.prepareMenu();
+    this.content.prefetchNote(slug);
+  }
+
+  preparePage(slug?: string) {
+    this.content.prefetchPage(slug);
   }
 
   toggle() {

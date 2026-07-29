@@ -3,7 +3,12 @@
     <span class="eyebrow">Singletone</span>
     <h1 class="cover__name">Lee Gyun Hyoung</h1>
     <p class="cover__line">Photographic studies of existence</p>
-    <a class="cover__cta" [routerLink]="language.path('projects')">
+    <a
+      class="cover__cta"
+      [routerLink]="language.path('projects')"
+      (pointerenter)="prepareProjects()"
+      (focus)="prepareProjects()"
+    >
       View Projects
     </a>
   </div>

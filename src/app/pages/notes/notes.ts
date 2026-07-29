@@ -28,6 +28,7 @@ export class NotesComponent {
 
   noteTree = computed(() => this.content.rootNoteGroup.value()?.children ?? []);
   allNotes = computed(() => notesInTree(this.noteTree()));
+  private selectedSlug = computed(() => this.slug() || this.allNotes()[0]?.slug || '');
   expandedGroups = signal<ReadonlySet<string>>(new Set());
   visibleNoteItems = computed(() =>
     flattenNoteTree(this.noteTree()).filter((item) =>
@@ -43,14 +44,6 @@ export class NotesComponent {
       const treeFailed = !this.slug() && this.content.rootNoteGroup.status() === 'error';
       if (detailFailed || treeFailed) {
         this.router.navigate(this.language.path('error'), { replaceUrl: true });
-      }
-    });
-
-    // "/notes" with no slug lands on the first note once the tree has loaded.
-    effect(() => {
-      const first = this.allNotes()[0];
-      if (!this.slug() && first) {
-        this.router.navigate(this.language.path('notes', first.slug), { replaceUrl: true });
       }
     });
 
@@ -70,13 +63,17 @@ export class NotesComponent {
   }
 
   private noteResource = resource({
-    params: () => ({ slug: this.slug(), lang: this.language.language() }),
+    params: () => ({ slug: this.selectedSlug(), lang: this.language.language() }),
     loader: ({ params }) => this.content.fetchNote(params.slug, params.lang),
   });
 
   active = computed(() =>
     this.noteResource.hasValue() ? (this.noteResource.value() ?? undefined) : undefined,
   );
+
+  prefetchNote(slug?: string) {
+    this.content.prefetchNote(slug);
+  }
 
   toggleGroup(groupId: string) {
     const opening = !this.expandedGroups().has(groupId);

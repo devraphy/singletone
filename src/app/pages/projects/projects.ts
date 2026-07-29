@@ -45,6 +45,7 @@ export class ProjectsComponent {
 
   projectTree = computed(() => this.content.rootGroup.value()?.children ?? []);
   allSeries = computed(() => seriesInProjectTree(this.projectTree()));
+  private selectedSlug = computed(() => this.slug() || this.allSeries()[0]?.slug || '');
   expandedGroups = signal<ReadonlySet<string>>(new Set());
 
   visibleProjectItems = computed(() =>
@@ -61,14 +62,6 @@ export class ProjectsComponent {
       const treeFailed = !this.slug() && this.content.rootGroup.status() === 'error';
       if (detailFailed || treeFailed) {
         this.router.navigate(this.language.path('error'), { replaceUrl: true });
-      }
-    });
-
-    // "/projects" with no slug lands on the first series once the tree has loaded.
-    effect(() => {
-      const first = this.allSeries()[0];
-      if (!this.slug() && first) {
-        this.router.navigate(this.language.path('projects', first.slug), { replaceUrl: true });
       }
     });
 
@@ -93,7 +86,7 @@ export class ProjectsComponent {
   }
 
   private seriesResource = resource({
-    params: () => ({ slug: this.slug(), lang: this.language.language() }),
+    params: () => ({ slug: this.selectedSlug(), lang: this.language.language() }),
     loader: ({ params }) => this.content.fetchSeries(params.slug, params.lang),
   });
 
@@ -102,6 +95,10 @@ export class ProjectsComponent {
   );
   imageUrl = imageUrl;
   imageSrcSet = imageSrcSet;
+
+  prefetchSeries(slug?: string) {
+    this.content.prefetchSeries(slug);
+  }
 
   toggleGroup(groupId: string) {
     const opening = !this.expandedGroups().has(groupId);

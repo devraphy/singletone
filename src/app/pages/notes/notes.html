@@ -23,6 +23,8 @@
               [routerLink]="language.path('notes', item.node.slug)"
               routerLinkActive="is-active"
               class="browse__nav-link"
+              (pointerenter)="prefetchNote(item.node.slug)"
+              (focus)="prefetchNote(item.node.slug)"
               >{{ item.node.title }}</a
             >
           }

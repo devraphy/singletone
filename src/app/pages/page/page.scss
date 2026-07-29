@@ -2,7 +2,7 @@
   padding: clamp(3rem, 8vw, 5rem) var(--gutter) clamp(4rem, 10vw, 6rem);
   max-width: 46rem;
   margin: 0 auto;
-  animation: content-reveal 0.55s var(--ease) both;
+  animation: content-reveal 0.28s var(--ease) both;
 }
 
 :host ::ng-deep .page__body {
@@ -82,7 +82,7 @@
   padding: 0 var(--gutter) clamp(6rem, 14vw, 9rem);
   max-width: 46rem;
   margin: 0 auto;
-  animation: content-reveal 0.55s var(--ease) both;
+  animation: content-reveal 0.28s var(--ease) both;
   animation-delay: 0.08s;
 }
 
