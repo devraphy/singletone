@@ -8,8 +8,8 @@ export interface SeoData {
   image?: string;
 }
 
-const SITE_NAME = 'Lee Gyun Hyoung — Singletone';
-const DEFAULT_DESCRIPTION = 'Photographic studies of existence by Lee Gyun Hyoung.';
+const SITE_NAME = 'Lee Gyun Hyoung';
+const DEFAULT_DESCRIPTION = 'Photographic studies of existence';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
