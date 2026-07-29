@@ -8,6 +8,7 @@ const localizedRoutes = (): Routes => [
   },
   {
     path: 'projects',
+    data: { preloadDelay: 0 },
     loadComponent: () => import('./pages/projects/projects').then((m) => m.ProjectsComponent),
   },
   {
@@ -16,6 +17,7 @@ const localizedRoutes = (): Routes => [
   },
   {
     path: 'notes',
+    data: { preloadDelay: 600 },
     loadComponent: () => import('./pages/notes/notes').then((m) => m.NotesComponent),
   },
   {
@@ -25,24 +27,22 @@ const localizedRoutes = (): Routes => [
   {
     path: '404',
     data: { status: '404' },
-    loadComponent: () =>
-      import('./pages/not-found/not-found').then((m) => m.NotFoundComponent),
+    loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFoundComponent),
   },
   {
     path: 'error',
     data: { status: 'error' },
-    loadComponent: () =>
-      import('./pages/not-found/not-found').then((m) => m.NotFoundComponent),
+    loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFoundComponent),
   },
   {
     path: ':pageSlug',
+    data: { preloadDelay: 1000 },
     loadComponent: () => import('./pages/page/page').then((m) => m.PageComponent),
   },
   {
     path: '**',
     data: { status: '404' },
-    loadComponent: () =>
-      import('./pages/not-found/not-found').then((m) => m.NotFoundComponent),
+    loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFoundComponent),
   },
 ];
 

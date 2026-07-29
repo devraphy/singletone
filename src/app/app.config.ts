@@ -1,6 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import {
-  PreloadAllModules,
   provideRouter,
   withInMemoryScrolling,
   withPreloading,
@@ -8,6 +7,7 @@ import {
 } from '@angular/router';
 
 import { routes } from './app.routes';
+import { UxPreloadingStrategy } from './ux-preloading.strategy';
 
 function routePath(snapshot: { firstChild: unknown; routeConfig?: { path?: string } | null }) {
   let current = snapshot;
@@ -23,10 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(
       routes,
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
-      // The site has only a few small lazy chunks. Loading them after the
-      // initial navigation removes the pause on each route's first visit
-      // without adding them to the critical initial bundle.
-      withPreloading(PreloadAllModules),
+      withPreloading(UxPreloadingStrategy),
       withViewTransitions({
         skipInitialTransition: true,
         onViewTransitionCreated: ({ from, to, transition }) => {

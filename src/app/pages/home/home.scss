@@ -15,8 +15,8 @@
   gap: 0.85rem;
   text-align: center;
 
-  > * {
-    animation: cover-reveal 0.8s var(--ease) both;
+  > :not(.cover__name) {
+    animation: cover-reveal 0.55s var(--ease) both;
   }
 
   > *:nth-child(1) {
