@@ -74,6 +74,12 @@ export class NavComponent {
     this.content.prefetchPage(slug);
   }
 
+  sectionLink(section: 'projects' | 'notes'): string | string[] {
+    const currentPath = this.router.url.split(/[?#]/, 1)[0];
+    const segments = currentPath.split('/').filter(Boolean);
+    return segments[1] === section ? currentPath : this.language.path(section);
+  }
+
   toggle() {
     this.prepareMenu();
     const next = !this.menuOpen();

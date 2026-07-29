@@ -10,7 +10,7 @@
       HOME
     </a>
     <a
-      [routerLink]="language.path('projects')"
+      [routerLink]="sectionLink('projects')"
       routerLinkActive="is-active"
       (pointerenter)="prepareProject()"
       (focus)="prepareProject()"
@@ -18,7 +18,7 @@
       PROJECTS
     </a>
     <a
-      [routerLink]="language.path('notes')"
+      [routerLink]="sectionLink('notes')"
       routerLinkActive="is-active"
       (pointerenter)="prepareNote()"
       (focus)="prepareNote()"
@@ -82,7 +82,7 @@
     <div class="nav-panel__group">
       <a
         class="nav-panel__link"
-        [routerLink]="language.path('projects')"
+        [routerLink]="sectionLink('projects')"
         routerLinkActive="is-active"
         (click)="close()"
       >
@@ -128,7 +128,7 @@
     <div class="nav-panel__group">
       <a
         class="nav-panel__link"
-        [routerLink]="language.path('notes')"
+        [routerLink]="sectionLink('notes')"
         routerLinkActive="is-active"
         (click)="close()"
       >
