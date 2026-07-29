@@ -48,6 +48,20 @@
     &.is-active {
       color: var(--ink);
     }
+
+    &.is-active {
+      font-weight: 500;
+    }
+
+    &.is-active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0.16em;
+      bottom: 0;
+      height: 1px;
+      background: currentColor;
+    }
   }
 }
 
@@ -74,6 +88,10 @@
     &:hover,
     &.is-active {
       color: var(--ink);
+    }
+
+    &.is-active {
+      font-weight: 500;
     }
 
     &.is-active::after {
@@ -274,6 +292,11 @@
       transform: scaleX(1);
     }
   }
+}
+
+.nav-panel__tree-item.is-child .nav-panel__sub-link:lang(ko) {
+  font-style: normal;
+  font-weight: 600;
 }
 
 @keyframes tree-item-reveal {

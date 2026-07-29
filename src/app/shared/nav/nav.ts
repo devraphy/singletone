@@ -11,7 +11,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ContentService } from '../../data/content.service';
 import { flattenProjectTree, seriesInProjectTree } from '../../data/project-tree';
 import { flattenNoteTree, notesInTree } from '../../data/note-tree';
-import { Language, LanguageService } from '../../i18n/language.service';
+import { Language, LanguageService, textLanguage } from '../../i18n/language.service';
 
 @Component({
   selector: 'app-nav',
@@ -25,6 +25,7 @@ export class NavComponent {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   language = inject(LanguageService);
+  textLanguage = textLanguage;
 
   private projectTree = computed(() => this.content.rootGroup.value()?.children ?? []);
   expandedProjectGroups = signal<ReadonlySet<string>>(new Set());

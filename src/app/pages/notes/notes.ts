@@ -5,7 +5,7 @@ import { map } from 'rxjs';
 import { toHTML, uriLooksSafe } from '@portabletext/to-html';
 import { ContentService } from '../../data/content.service';
 import { NoteDoc } from '../../data/content.types';
-import { LanguageService } from '../../i18n/language.service';
+import { LanguageService, textLanguage } from '../../i18n/language.service';
 import { SeoService } from '../../seo/seo.service';
 import { flattenNoteTree, notesInTree, parentGroupIdsForNote } from '../../data/note-tree';
 
@@ -22,6 +22,7 @@ export class NotesComponent {
   private content = inject(ContentService);
   private seo = inject(SeoService);
   language = inject(LanguageService);
+  textLanguage = textLanguage;
 
   private slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') ?? '')), {
     initialValue: '',

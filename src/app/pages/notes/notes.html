@@ -22,6 +22,7 @@
             <a
               [routerLink]="language.path('notes', item.node.slug)"
               class="browse__nav-link"
+              [attr.lang]="textLanguage(item.node.title)"
               [class.is-active]="selectedSlug() === item.node.slug"
               (pointerenter)="prefetchNote(item.node.slug)"
               (focus)="prefetchNote(item.node.slug)"
@@ -38,7 +39,7 @@
       <div class="browse__main">
         <header class="browse__head">
           <span class="eyebrow">{{ n.date }}</span>
-          <h1>{{ n.title }}</h1>
+          <h1 [attr.lang]="textLanguage(n.title)">{{ n.title }}</h1>
         </header>
 
         @if (bodyHtml()) {

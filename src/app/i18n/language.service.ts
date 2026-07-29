@@ -7,6 +7,10 @@ export type Language = 'ko' | 'en';
 
 const STORAGE_KEY = 'singletone-language';
 
+export function textLanguage(text: string): Language {
+  return /[가-힣]/.test(text) ? 'ko' : 'en';
+}
+
 export function detectPreferredLanguage(): Language {
   const saved = localStorage.getItem(STORAGE_KEY);
   if (saved === 'ko' || saved === 'en') return saved;

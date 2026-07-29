@@ -22,6 +22,7 @@
             <a
               [routerLink]="language.path('projects', item.node.slug)"
               class="browse__nav-link"
+              [attr.lang]="textLanguage(item.node.title)"
               [class.is-active]="selectedSlug() === item.node.slug"
               (pointerenter)="prefetchSeries(item.node.slug)"
               (focus)="prefetchSeries(item.node.slug)"
@@ -38,7 +39,7 @@
       <div class="browse__main">
         <header class="browse__head">
           <span class="eyebrow">{{ s.year }} — {{ s.medium }}</span>
-          <h1>{{ s.title }}</h1>
+          <h1 [attr.lang]="textLanguage(s.title)">{{ s.title }}</h1>
           <p class="browse__note">{{ s.note }}</p>
         </header>
 

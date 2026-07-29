@@ -22,7 +22,7 @@ import {
   parentGroupIdsForSeries,
   seriesInProjectTree,
 } from '../../data/project-tree';
-import { LanguageService } from '../../i18n/language.service';
+import { LanguageService, textLanguage } from '../../i18n/language.service';
 import { SeoService } from '../../seo/seo.service';
 
 @Component({
@@ -38,6 +38,7 @@ export class ProjectsComponent {
   private content = inject(ContentService);
   private seo = inject(SeoService);
   language = inject(LanguageService);
+  textLanguage = textLanguage;
 
   private slug = toSignal(this.route.paramMap.pipe(map((p) => p.get('slug') ?? '')), {
     initialValue: '',

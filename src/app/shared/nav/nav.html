@@ -113,6 +113,7 @@
               <a
                 class="nav-panel__sub-link"
                 [routerLink]="language.path('projects', item.node.slug)"
+                [attr.lang]="textLanguage(item.node.title)"
                 routerLinkActive="is-active"
                 (pointerenter)="prepareProject(item.node.slug)"
                 (focus)="prepareProject(item.node.slug)"
@@ -159,6 +160,7 @@
               <a
                 class="nav-panel__sub-link"
                 [routerLink]="language.path('notes', item.node.slug)"
+                [attr.lang]="textLanguage(item.node.title)"
                 routerLinkActive="is-active"
                 (pointerenter)="prepareNote(item.node.slug)"
                 (focus)="prepareNote(item.node.slug)"
