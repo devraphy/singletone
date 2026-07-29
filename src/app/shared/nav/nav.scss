@@ -199,6 +199,21 @@
   }
 }
 
+.nav-panel__loading {
+  min-height: 1.05rem;
+  font-family: var(--font-utility);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--graphite);
+  animation: loading-pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes loading-pulse {
+  to {
+    opacity: 0.45;
+  }
+}
+
 .nav-panel__tree-item {
   position: relative;
   padding-left: calc(var(--tree-depth, 0) * 1.4rem);

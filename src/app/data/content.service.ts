@@ -1,4 +1,4 @@
-import { Injectable, inject, resource } from '@angular/core';
+import { Injectable, computed, inject, resource, signal } from '@angular/core';
 import { sanityClient } from './sanity.client';
 import { GroupDoc, NoteDoc, NoteGroupDoc, PageDoc, SeriesDoc } from './content.types';
 import { Language, LanguageService } from '../i18n/language.service';
@@ -116,10 +116,15 @@ const NOTE_QUERY = `*[_type == "note" && slug.current == $slug][0]{
 @Injectable({ providedIn: 'root' })
 export class ContentService {
   private language = inject(LanguageService);
+  private navigationTreesEnabled = signal(false);
 
-  /** The site's project tree, rooted at the one group marked isRoot. */
-  rootGroup = resource<GroupDoc | undefined, Language>({
-    params: this.language.language,
+  /**
+   * Project and note trees are only needed by their index pages and the
+   * expanded mobile menu. Keeping params undefined prevents Angular resource
+   * from starting either Sanity request during the critical first render.
+   */
+  rootGroup = resource<GroupDoc | undefined, Language | undefined>({
+    params: () => (this.navigationTreesEnabled() ? this.language.language() : undefined),
     loader: ({ params }) =>
       sanityClient.fetch<GroupDoc | undefined>(ROOT_GROUP_QUERY, { lang: params }),
   });
@@ -140,12 +145,21 @@ export class ContentService {
     return sanityClient.fetch<PageDoc | null>(PAGE_QUERY, { slug, lang });
   }
 
-  /** The site's notes tree, rooted at the one noteGroup marked isRoot. */
-  rootNoteGroup = resource<NoteGroupDoc | undefined, Language>({
-    params: this.language.language,
+  rootNoteGroup = resource<NoteGroupDoc | undefined, Language | undefined>({
+    params: () => (this.navigationTreesEnabled() ? this.language.language() : undefined),
     loader: ({ params }) =>
       sanityClient.fetch<NoteGroupDoc | undefined>(ROOT_NOTE_GROUP_QUERY, { lang: params }),
   });
+
+  navigationTreesLoading = computed(
+    () =>
+      this.navigationTreesEnabled() &&
+      (this.rootGroup.status() === 'loading' || this.rootNoteGroup.status() === 'loading'),
+  );
+
+  loadNavigationTrees() {
+    this.navigationTreesEnabled.set(true);
+  }
 
   fetchNote(slug: string, lang = this.language.language()): Promise<NoteDoc | null> {
     if (!slug) return Promise.resolve(null);

@@ -54,6 +54,8 @@ export class ProjectsComponent {
   );
 
   constructor() {
+    this.content.loadNavigationTrees();
+
     effect(() => {
       const detailFailed = this.seriesResource.status() === 'error';
       const treeFailed = !this.slug() && this.content.rootGroup.status() === 'error';
@@ -295,9 +297,7 @@ export class ProjectsComponent {
       const dialog = this.lightbox()?.nativeElement;
       if (!dialog) return;
       const focusable = [
-        ...dialog.querySelectorAll<HTMLElement>(
-          'button, [href], [tabindex]:not([tabindex="-1"])',
-        ),
+        ...dialog.querySelectorAll<HTMLElement>('button, [href], [tabindex]:not([tabindex="-1"])'),
       ];
       const first = focusable[0];
       const last = focusable[focusable.length - 1];

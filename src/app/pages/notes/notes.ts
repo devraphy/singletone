@@ -6,11 +6,7 @@ import { toHTML, uriLooksSafe } from '@portabletext/to-html';
 import { ContentService } from '../../data/content.service';
 import { LanguageService } from '../../i18n/language.service';
 import { SeoService } from '../../seo/seo.service';
-import {
-  flattenNoteTree,
-  notesInTree,
-  parentGroupIdsForNote,
-} from '../../data/note-tree';
+import { flattenNoteTree, notesInTree, parentGroupIdsForNote } from '../../data/note-tree';
 
 @Component({
   selector: 'app-notes',
@@ -40,6 +36,8 @@ export class NotesComponent {
   );
 
   constructor() {
+    this.content.loadNavigationTrees();
+
     effect(() => {
       const detailFailed = this.noteResource.status() === 'error';
       const treeFailed = !this.slug() && this.content.rootNoteGroup.status() === 'error';

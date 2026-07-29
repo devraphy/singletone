@@ -1,4 +1,12 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  HostListener,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ContentService } from '../../data/content.service';
 import { flattenProjectTree, seriesInProjectTree } from '../../data/project-tree';
@@ -14,6 +22,7 @@ import { Language, LanguageService } from '../../i18n/language.service';
 })
 export class NavComponent {
   private content = inject(ContentService);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   language = inject(LanguageService);
 
@@ -34,10 +43,25 @@ export class NavComponent {
   );
 
   pageLinks = computed(() => this.content.pages.value() ?? []);
+  navigationTreesLoading = this.content.navigationTreesLoading;
 
   menuOpen = signal(false);
 
+  constructor() {
+    // Fetch shortly after the first render. In normal use this finishes before
+    // the menu is opened without competing with the critical first paint.
+    afterNextRender(() => {
+      const timerId = window.setTimeout(() => this.content.loadNavigationTrees(), 1200);
+      this.destroyRef.onDestroy(() => window.clearTimeout(timerId));
+    });
+  }
+
+  prepareMenu() {
+    this.content.loadNavigationTrees();
+  }
+
   toggle() {
+    this.prepareMenu();
     const next = !this.menuOpen();
     this.menuOpen.set(next);
     document.body.style.overflow = next ? 'hidden' : '';

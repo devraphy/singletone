@@ -2,22 +2,34 @@
   <a class="nav__mark" [routerLink]="language.path()" (click)="close()">L.G.H.</a>
 
   <div class="nav__links">
-    <a [routerLink]="language.path()" [routerLinkActiveOptions]="{ exact: true }" routerLinkActive="is-active">
+    <a
+      [routerLink]="language.path()"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="is-active"
+    >
       HOME
     </a>
-    <a [routerLink]="language.path('projects')" routerLinkActive="is-active">
-      PROJECTS
-    </a>
-    <a [routerLink]="language.path('notes')" routerLinkActive="is-active">
-      NOTES
-    </a>
+    <a [routerLink]="language.path('projects')" routerLinkActive="is-active"> PROJECTS </a>
+    <a [routerLink]="language.path('notes')" routerLinkActive="is-active"> NOTES </a>
     @for (p of pageLinks(); track p._id) {
       <a [routerLink]="language.path(p.slug)" routerLinkActive="is-active">{{ p.menuLabel }}</a>
     }
     <div class="language-switch" aria-label="Language">
-      <button type="button" [class.is-active]="language.language() === 'ko'" (click)="selectLanguage('ko')">KO</button>
+      <button
+        type="button"
+        [class.is-active]="language.language() === 'ko'"
+        (click)="selectLanguage('ko')"
+      >
+        KO
+      </button>
       <span aria-hidden="true">/</span>
-      <button type="button" [class.is-active]="language.language() === 'en'" (click)="selectLanguage('en')">EN</button>
+      <button
+        type="button"
+        [class.is-active]="language.language() === 'en'"
+        (click)="selectLanguage('en')"
+      >
+        EN
+      </button>
     </div>
   </div>
 
@@ -25,6 +37,8 @@
     type="button"
     class="nav__toggle"
     [class.is-open]="menuOpen()"
+    (pointerenter)="prepareMenu()"
+    (focus)="prepareMenu()"
     (click)="toggle()"
     [attr.aria-expanded]="menuOpen()"
     aria-label="Menu"
@@ -46,10 +60,18 @@
     >
 
     <div class="nav-panel__group">
-      <a class="nav-panel__link" [routerLink]="language.path('projects')" routerLinkActive="is-active" (click)="close()">
+      <a
+        class="nav-panel__link"
+        [routerLink]="language.path('projects')"
+        routerLinkActive="is-active"
+        (click)="close()"
+      >
         PROJECTS
       </a>
       <div class="nav-panel__sub">
+        @if (navigationTreesLoading() && visibleProjectItems().length === 0) {
+          <span class="nav-panel__loading" role="status">Loading projects…</span>
+        }
         @for (item of visibleProjectItems(); track item.node._id) {
           <div
             class="nav-panel__tree-item"
@@ -82,10 +104,18 @@
     </div>
 
     <div class="nav-panel__group">
-      <a class="nav-panel__link" [routerLink]="language.path('notes')" routerLinkActive="is-active" (click)="close()">
+      <a
+        class="nav-panel__link"
+        [routerLink]="language.path('notes')"
+        routerLinkActive="is-active"
+        (click)="close()"
+      >
         NOTES
       </a>
       <div class="nav-panel__sub">
+        @if (navigationTreesLoading() && visibleNoteItems().length === 0) {
+          <span class="nav-panel__loading" role="status">Loading notes…</span>
+        }
         @for (item of visibleNoteItems(); track item.node._id) {
           <div
             class="nav-panel__tree-item"
@@ -128,9 +158,21 @@
     }
 
     <div class="language-switch language-switch--mobile" aria-label="Language">
-      <button type="button" [class.is-active]="language.language() === 'ko'" (click)="selectLanguage('ko')">KO</button>
+      <button
+        type="button"
+        [class.is-active]="language.language() === 'ko'"
+        (click)="selectLanguage('ko')"
+      >
+        KO
+      </button>
       <span aria-hidden="true">/</span>
-      <button type="button" [class.is-active]="language.language() === 'en'" (click)="selectLanguage('en')">EN</button>
+      <button
+        type="button"
+        [class.is-active]="language.language() === 'en'"
+        (click)="selectLanguage('en')"
+      >
+        EN
+      </button>
     </div>
   </div>
 }
