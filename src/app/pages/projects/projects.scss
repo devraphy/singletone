@@ -137,15 +137,6 @@
 .browse__main {
   flex: 1;
   min-width: 0;
-  // Keep the new project visible from the first frame. Fading from opacity 0
-  // made a completed Sanity response look like it was still loading.
-  animation: project-content-reveal 0.32s var(--ease) both;
-}
-
-@keyframes project-content-reveal {
-  from {
-    transform: translateY(8px);
-  }
 }
 
 .browse__head {

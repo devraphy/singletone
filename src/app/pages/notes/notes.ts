@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { toHTML, uriLooksSafe } from '@portabletext/to-html';
 import { ContentService } from '../../data/content.service';
+import { NoteDoc } from '../../data/content.types';
 import { LanguageService } from '../../i18n/language.service';
 import { SeoService } from '../../seo/seo.service';
 import { flattenNoteTree, notesInTree, parentGroupIdsForNote } from '../../data/note-tree';
@@ -28,7 +29,7 @@ export class NotesComponent {
 
   noteTree = computed(() => this.content.rootNoteGroup.value()?.children ?? []);
   allNotes = computed(() => notesInTree(this.noteTree()));
-  private selectedSlug = computed(() => this.slug() || this.allNotes()[0]?.slug || '');
+  selectedSlug = computed(() => this.slug() || this.allNotes()[0]?.slug || '');
   expandedGroups = signal<ReadonlySet<string>>(new Set());
   visibleNoteItems = computed(() =>
     flattenNoteTree(this.noteTree()).filter((item) =>
@@ -54,7 +55,7 @@ export class NotesComponent {
     });
 
     effect(() => {
-      const activeId = this.active()?._id;
+      const activeId = this.allNotes().find((note) => note.slug === this.selectedSlug())?._id;
       if (!activeId) return;
       const parentIds = parentGroupIdsForNote(this.noteTree(), activeId);
       if (parentIds.every((id) => untracked(this.expandedGroups).has(id))) return;
@@ -67,9 +68,14 @@ export class NotesComponent {
     loader: ({ params }) => this.content.fetchNote(params.slug, params.lang),
   });
 
-  active = computed(() =>
-    this.noteResource.hasValue() ? (this.noteResource.value() ?? undefined) : undefined,
-  );
+  private displayedNote = signal<NoteDoc | undefined>(undefined);
+  active = this.displayedNote.asReadonly();
+
+  private retainContentWhileLoading = effect(() => {
+    if (!this.noteResource.hasValue()) return;
+    const note = this.noteResource.value() ?? undefined;
+    if (note) this.displayedNote.set(note);
+  });
 
   prefetchNote(slug?: string) {
     this.content.prefetchNote(slug);

@@ -1,5 +1,14 @@
-import { Routes } from '@angular/router';
+import { Routes, UrlMatcher } from '@angular/router';
 import { detectPreferredLanguage } from './i18n/language.service';
+
+const sectionMatcher =
+  (section: 'projects' | 'notes'): UrlMatcher =>
+  (segments) => {
+    if (segments[0]?.path !== section || segments.length > 2) return null;
+    return segments[1]
+      ? { consumed: segments, posParams: { slug: segments[1] } }
+      : { consumed: segments };
+  };
 
 const localizedRoutes = (): Routes => [
   {
@@ -7,21 +16,13 @@ const localizedRoutes = (): Routes => [
     loadComponent: () => import('./pages/home/home').then((m) => m.HomeComponent),
   },
   {
-    path: 'projects',
+    matcher: sectionMatcher('projects'),
     data: { preloadDelay: 0 },
     loadComponent: () => import('./pages/projects/projects').then((m) => m.ProjectsComponent),
   },
   {
-    path: 'projects/:slug',
-    loadComponent: () => import('./pages/projects/projects').then((m) => m.ProjectsComponent),
-  },
-  {
-    path: 'notes',
+    matcher: sectionMatcher('notes'),
     data: { preloadDelay: 600 },
-    loadComponent: () => import('./pages/notes/notes').then((m) => m.NotesComponent),
-  },
-  {
-    path: 'notes/:slug',
     loadComponent: () => import('./pages/notes/notes').then((m) => m.NotesComponent),
   },
   {

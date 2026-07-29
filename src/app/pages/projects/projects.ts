@@ -16,7 +16,7 @@ import { map } from 'rxjs';
 import { PlateComponent } from '../../shared/plate/plate';
 import { ContentService } from '../../data/content.service';
 import { imageSrcSet, imageUrl } from '../../data/sanity.client';
-import { Plate } from '../../data/content.types';
+import { Plate, SeriesDoc } from '../../data/content.types';
 import {
   flattenProjectTree,
   parentGroupIdsForSeries,
@@ -45,7 +45,7 @@ export class ProjectsComponent {
 
   projectTree = computed(() => this.content.rootGroup.value()?.children ?? []);
   allSeries = computed(() => seriesInProjectTree(this.projectTree()));
-  private selectedSlug = computed(() => this.slug() || this.allSeries()[0]?.slug || '');
+  selectedSlug = computed(() => this.slug() || this.allSeries()[0]?.slug || '');
   expandedGroups = signal<ReadonlySet<string>>(new Set());
 
   visibleProjectItems = computed(() =>
@@ -67,7 +67,7 @@ export class ProjectsComponent {
 
     // Keep the parents of the currently selected child project expanded.
     effect(() => {
-      const activeId = this.active()?._id;
+      const activeId = this.allSeries().find((series) => series.slug === this.selectedSlug())?._id;
       if (!activeId) return;
       const parentIds = parentGroupIdsForSeries(this.projectTree(), activeId);
       if (parentIds.every((id) => untracked(this.expandedGroups).has(id))) return;
@@ -90,9 +90,14 @@ export class ProjectsComponent {
     loader: ({ params }) => this.content.fetchSeries(params.slug, params.lang),
   });
 
-  active = computed(() =>
-    this.seriesResource.hasValue() ? (this.seriesResource.value() ?? undefined) : undefined,
-  );
+  private displayedSeries = signal<SeriesDoc | undefined>(undefined);
+  active = this.displayedSeries.asReadonly();
+
+  private retainContentWhileLoading = effect(() => {
+    if (!this.seriesResource.hasValue()) return;
+    const series = this.seriesResource.value() ?? undefined;
+    if (series) this.displayedSeries.set(series);
+  });
   imageUrl = imageUrl;
   imageSrcSet = imageSrcSet;
 
