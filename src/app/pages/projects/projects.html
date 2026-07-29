@@ -23,6 +23,7 @@
               [routerLink]="language.path('projects', item.node.slug)"
               routerLinkActive="is-active"
               class="browse__nav-link"
+              [class.is-active]="active()?._id === item.node._id"
               (pointerenter)="prefetchSeries(item.node.slug)"
               (focus)="prefetchSeries(item.node.slug)"
               >{{ item.node.title }}</a
