@@ -142,6 +142,33 @@
 .browse__main {
   flex: 1;
   min-width: 0;
+  animation: project-content-reveal 0.42s var(--ease) both;
+  mask-image: linear-gradient(90deg, #000 0%, #000 62%, rgba(0, 0, 0, 0.3) 82%, transparent 100%);
+  mask-size: 180% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    #000 0%,
+    #000 62%,
+    rgba(0, 0, 0, 0.3) 82%,
+    transparent 100%
+  );
+  -webkit-mask-size: 180% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
+@keyframes project-content-reveal {
+  from {
+    opacity: 0.88;
+    mask-position: 100% 0;
+    -webkit-mask-position: 100% 0;
+  }
+
+  to {
+    opacity: 1;
+    mask-position: 0 0;
+    -webkit-mask-position: 0 0;
+  }
 }
 
 .browse__head {

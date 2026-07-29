@@ -31,7 +31,12 @@ export class PlateComponent {
   showImage = computed(() => !!this.src() && !this.imgFailed());
 
   onImgLoad() {
-    this.loaded.set(true);
+    // Cached images can finish before their initial opacity: 0 state has
+    // reached the screen. Wait through one painted frame so repeat visits
+    // receive the same reveal transition as the first visit.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => this.loaded.set(true));
+    });
   }
 
   onImgError() {

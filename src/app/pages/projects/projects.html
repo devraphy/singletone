@@ -54,6 +54,7 @@
               >
                 <app-plate
                   [seed]="i"
+                  [style.--plate-reveal-delay.ms]="plateRevealDelay(i)"
                   [ratio]="'portrait'"
                   [aspectRatio]="plateAspectRatio(plate, s.layout)"
                   [src]="imageUrl(plate.image, s.layout === 'cinematic' ? 1800 : 700)"

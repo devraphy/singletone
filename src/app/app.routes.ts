@@ -17,12 +17,12 @@ const localizedRoutes = (): Routes => [
   },
   {
     matcher: sectionMatcher('projects'),
-    data: { preloadDelay: 0 },
+    data: { preloadDelay: 0, section: 'projects' },
     loadComponent: () => import('./pages/projects/projects').then((m) => m.ProjectsComponent),
   },
   {
     matcher: sectionMatcher('notes'),
-    data: { preloadDelay: 600 },
+    data: { preloadDelay: 600, section: 'notes' },
     loadComponent: () => import('./pages/notes/notes').then((m) => m.NotesComponent),
   },
   {

@@ -106,6 +106,10 @@ export class ProjectsComponent {
     this.content.prefetchSeries(slug);
   }
 
+  plateRevealDelay(index: number): number {
+    return Math.min(index, 3) * 66;
+  }
+
   toggleGroup(groupId: string) {
     const opening = !this.expandedGroups().has(groupId);
     this.expandedGroups.update((current) => {

@@ -47,7 +47,7 @@
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 0.35s var(--ease);
+  transition: opacity 0.77s var(--ease) var(--plate-reveal-delay, 0ms);
 
   &.is-loaded {
     opacity: 1;

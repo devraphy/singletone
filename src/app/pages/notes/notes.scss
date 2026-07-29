@@ -111,6 +111,14 @@
   flex: 1;
   min-width: 0;
   max-width: 40rem;
+  animation: note-content-reveal 0.26s var(--ease) both;
+}
+
+@keyframes note-content-reveal {
+  from {
+    opacity: 0.45;
+    transform: translateY(8px);
+  }
 }
 
 .browse__head {
@@ -155,4 +163,12 @@
 // the same apparent scale.
 :host-context(html:lang(en)) ::ng-deep .browse__body p {
   font-size: 1.125rem;
+}
+
+// Newsreader is supplied at 500, while Korean falls back to the platform
+// serif at its lighter 400 default. Match their perceived weight and raise
+// the Korean copy contrast slightly against the paper background.
+:host-context(html:lang(ko)) ::ng-deep .browse__body p {
+  font-weight: 500;
+  color: var(--body-copy);
 }

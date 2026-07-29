@@ -9,12 +9,15 @@ import {
 import { routes } from './app.routes';
 import { UxPreloadingStrategy } from './ux-preloading.strategy';
 
-function routePath(snapshot: { firstChild: unknown; routeConfig?: { path?: string } | null }) {
+function routeSection(snapshot: {
+  firstChild: unknown;
+  data?: Record<string, unknown>;
+}): string | undefined {
   let current = snapshot;
   while (current.firstChild) {
     current = current.firstChild as typeof current;
   }
-  return current.routeConfig?.path;
+  return typeof current.data?.['section'] === 'string' ? current.data['section'] : undefined;
 }
 
 export const appConfig: ApplicationConfig = {
@@ -27,10 +30,11 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions({
         skipInitialTransition: true,
         onViewTransitionCreated: ({ from, to, transition }) => {
-          // Project-to-project navigation already has its own content motion.
-          // A root snapshot cross-fade keeps the old project visibly frozen for
-          // 320ms, making a completed API request appear delayed.
-          if (routePath(from) === 'projects/:slug' && routePath(to) === 'projects/:slug') {
+          // Internal project and note changes have their own content motion.
+          // Running the root cross-fade too makes the tree and content flash
+          // once during navigation and again when the fetched content arrives.
+          const fromSection = routeSection(from);
+          if (fromSection && fromSection === routeSection(to)) {
             transition.skipTransition();
           }
         },
